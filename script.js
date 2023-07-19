@@ -24,6 +24,7 @@ const initializeGaame = () => {
   boardRegions.forEach((element) => {
     element.classList.remove("win");
     element.innerText = "";
+    element.classList.add("cursor-pointer");
     element.addEventListener("click", handleBoardClick);
   });
 };
@@ -82,8 +83,16 @@ const getWinRegions = () => {
 };
 
 const disableRegion = (element) => {
-  element.style.cursor = "default";
+  element.classList.remove("cursor-pointer");
   element.removeEventListener("click", handleBoardClick);
+};
+
+const handleWin = (regions) => {
+  regions.forEach((region) => {
+    document.querySelector(`[data-region="${region}"]`).classList.add("win");
+  });
+  const playerName = document.getElementById(turnPlayer).value;
+  document.querySelector("h2").innerHTML = `${playerName} VENCEU! `;
 };
 
 const handleBoardClick = (ev) => {
@@ -99,15 +108,15 @@ const handleBoardClick = (ev) => {
     span.innerText = "O";
     vBoard[row][column] = "O";
   }
+
   console.clear();
   console.table(vBoard);
+
   disableRegion(span);
   const winRegions = getWinRegions();
+
   if (winRegions.length > 0) {
-    const playerInput = document.getElementById(turnPlayer);
-    document.getElementById(
-      "turnPlayer"
-    ).innerText = `${playerInput.value} VENCEU!`;
+    handleWin(winRegions);
   } else if (vBoard.flat().includes("")) {
     turnPlayer = turnPlayer === "player1" ? "player2" : "player1";
     updateTitle();
